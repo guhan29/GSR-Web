@@ -1,4 +1,1 @@
-
-#GSR-Web
-�
-�
+# GSR-Web
