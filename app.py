@@ -108,6 +108,30 @@ def getGsrStatus():
     return str(dtw_algorithm(gsr_value_without_connection, sample_array))
 
 
+@app.route('/getGsrResult')
+def getGsrResult():
+    print("working")
+    global dataDict
+    gsr_value_without_connection = request.args.get("initialValue") or 252
+    gsr_value_without_connection = float(gsr_value_without_connection)
+    gsr_value_without_connection = max(33, gsr_value_without_connection)
+    print("In Route", dataDict)
+    # if dataDict == None or len(dataDict) == 0:
+    #     return jsonify({"status":"no input"})
+    dataDict = datasetRef.get()
+    # print(dataDict.values())
+    sample_array = np.fromiter(map(lambda d: float(d["gsrValue"]), dataDict.values()), dtype=float)
+    ans = dtw_algorithm(gsr_value_without_connection, sample_array)
+    # print(ans)
+    # print("---------------------------------------------")
+    # print(ans[0][1])
+    print("result")
+    return jsonify({"status":ans[0][1]})
+    # print("---------------------------------------------")
+    # return str(dtw_algorithm(gsr_value_without_connection, sample_array))
+
+
+
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     age = request.args.get('age') or 21
