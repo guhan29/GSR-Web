@@ -131,6 +131,34 @@ def getGsrResult():
     # return str(dtw_algorithm(gsr_value_without_connection, sample_array))
 
 
+@app.route('/getUVindex', methods=['GET', 'POST'])
+def getUVindex():
+    lat = request.args.get('lat') or "10.900"
+    lng = request.args.get('lng') or "76.904"
+    print(lat, lng)
+
+    # Get uv value
+    try:
+        req = Request(f"https://api.openuv.io/api/v1/uv?lat={lat}&lng={lng}", None, {'x-access-token' : '7044ee19687d7cffd25d10a64d540b50'})
+        response = urlopen(req)
+        dt = json.loads(response.read())
+        # print(dt)
+        uv_max = dt["result"]["uv_max"]
+        uv = dt["result"]["uv"]
+    except:
+        uv_max = 8
+        uv = 8
+    print(uv, uv_max)
+
+    res = {
+        "uv": uv,
+        "uv_max": uv_max,
+        "lat": lat,
+        "lng": lng,
+        "timestamp": datetime.datetime.now(),
+    }
+
+    return jsonify(res)
 
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
